@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+CUDA_VERSION=11.1.0
+ENV_NUMBER=0
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+source $SCRIPT_DIR/../cuda-activation/env-cuda"$CUDA_VERSION".sh
+
+conda env create -n pytorch-dataloader-env"$ENV_NUMBER" -f "$SCRIPT_DIR/environment.yaml"
+
+eval "$(conda shell.bash hook)"
+conda activate pytorch-dataloader-env"$ENV_NUMBER"
+
+source $SCRIPT_DIR/../cuda-activation/save-cuda-env-vars-to-env.sh
+
+# Install pytorch through pip
+pip3 install numpy==1.19.5 torch==1.8.1+cu111 torchaudio==0.8.1 torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+
